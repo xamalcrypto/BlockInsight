@@ -1,0 +1,41 @@
+# scripts/network_metrics.py
+
+import requests
+import pandas as pd
+import matplotlib.pyplot as plt
+
+def fetch_network_metrics(api_url):
+    """
+    Fetch network metrics from the blockchain API.
+    
+    :param api_url: Base URL of the blockchain API
+    :return: DataFrame with network metrics
+    """
+    response = requests.get(f'{api_url}/network_metrics')
+    response.raise_for_status()
+    data = response.json()
+    df = pd.DataFrame(data)
+    return df
+
+def plot_network_metrics(df):
+    """
+    Plot network metrics.
+    
+    :param df: DataFrame with network metrics
+    """
+    df['date'] = pd.to_datetime(df['timestamp'])
+    plt.figure(figsize=(12, 6))
+    plt.plot(df['date'], df['hash_rate'], label='Hash Rate')
+    plt.plot(df['date'], df['block_time'], label='Block Time')
+    plt.xlabel('Date')
+    plt.ylabel('Value')
+    plt.title('Network Metrics Over Time')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+# Example usage:
+# api_url = 'https://api.blockchain.example.com'
+# network_metrics_df = fetch_network_metrics(api_url)
+# print(network_metrics_df)
+# plot_network_metrics(network_metrics_df)
